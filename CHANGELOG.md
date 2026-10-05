@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Spill a review body that expands past the 2 MiB approval file. v0.1.6 can read older inline records, and it cannot read a spilled pending record.
+
 ## 0.1.6 - 2026-09-22
 
 **Highlights:** Guard verdicts and local approvals fail closed on ambiguous JSON.
