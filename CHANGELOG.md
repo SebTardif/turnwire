@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Spill a review body that expands past the 2 MiB approval file. v0.1.6 can read older inline records, and it cannot read a spilled pending record.
+- Preserve local approval of legal messages whose JSON escapes exceed the 2 MiB approval-file limit using bounded, integrity-checked body sidecars; spilled pending reviews require the newer binary after rollback, thanks @SebTardif.
 
 ## 0.1.6 - 2026-09-22
 

@@ -2,6 +2,8 @@ package approval
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,7 +21,7 @@ func TestSavePendingSpillsBodyThatExceedsStoreAfterEscaping(t *testing.T) {
 	body := strings.Repeat("<>", 200_000)
 	pending := Pending{
 		MessageID: "message-1", Direction: "outbound", Source: "work", Destination: "personal",
-		Body: body, BodySHA256: "abc", ReasonCode: "review", CreatedAt: "2026-01-01T00:00:00Z",
+		Body: body, BodySHA256: fmt.Sprintf("%x", sha256.Sum256([]byte(body))), ReasonCode: "review", CreatedAt: "2026-01-01T00:00:00Z",
 	}
 	if err := store.SavePending(pending); err != nil {
 		t.Fatal(err)

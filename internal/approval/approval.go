@@ -3,12 +3,14 @@ package approval
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"time"
+	"unicode/utf8"
 
 	"github.com/openclaw/turnwire/internal/securestore"
 	"github.com/openclaw/turnwire/internal/strictjson"
@@ -169,8 +171,11 @@ func (s *Store) loadPending(messageID string) (Pending, error) {
 	if err != nil {
 		return Pending{}, fmt.Errorf("read pending approval body: %w", err)
 	}
-	if !securestore.Fits(body) {
-		return Pending{}, errors.New("pending approval body has an invalid size")
+	if !utf8.Valid(body) {
+		return Pending{}, errors.New("pending approval body is not valid UTF-8")
+	}
+	if fmt.Sprintf("%x", sha256.Sum256(body)) != pending.BodySHA256 {
+		return Pending{}, errors.New("pending approval body hash does not match")
 	}
 	pending.Body = string(body)
 	pending.BodyExternal = false
